@@ -1,7 +1,7 @@
 import os
 import re
 import time
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 from BingImageCreator import ImageGen
 from dotenv import dotenv_values
 
