@@ -18,7 +18,7 @@ You have to install the requirements listed in `requirements.txt`.
 pip install -r requirements.txt
 ```
 
-_If you're not using a virtual environment (recommended), you should maybe use `pip3` instead of `pip`, if `pip3` is your python3 pip._
+_If you're not using some type of virtual environment for python (although recommended), you might have to use `pip3` instead of `pip`, if `pip3` is your python3 pip._
 
 ## Get auth token
 
@@ -26,15 +26,20 @@ Please refer to the [acheong08/BingImageCreator README](https://github.com/acheo
 
 ## Set auth token
 
-Next up, copy `.env.example` to `.env` and set your auth token (+ other settings if you want)
+Next up, copy `.env.example` to `.env` and set your auth token (+ other settings if you'd like to)
+
+## Set prompts
+
+Put your prompts in the prompts file, which is `prompts.txt` per default, but you can change that in the `.env` file.
+Put one prompt per line.
 
 ## Running the script
-
-After putting your prompts in the prompts file (`prompts.txt` per default) with one prompt per line, run the following command:
 
 ```bash
 python main.py
 ```
+
+_Again, you might have to use `python3` instead of `python`, depending on your setup._
 
 # Example
 
@@ -46,7 +51,7 @@ A cat covered in oil
 A dog sitting at the beach
 ```
 
-I set the number of batches (in the .env) to 3, (4 images per batch), so I get 12 images per prompt.
+I set the number of batches (in the `.env`) to 3, (at 4 images per batch, which is what the Bing AI generates per request), so I get 12 images in total per prompt.
 
 Terminal output _(with pretty colors)_:
 ![Terminal Screenshot](readme-images/terminal-screenshot.png)
