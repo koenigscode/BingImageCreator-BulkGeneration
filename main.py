@@ -56,7 +56,7 @@ with open(env["PROMPTS_FILENAME"], 'r') as file:
 
                 time.sleep(0.5)
             except Exception as e:
-                print(Fore.RED + e.with_traceback + Style.RESET_ALL)
+                print(f"{Fore.RED} {e.with_traceback} {Style.RESET_ALL}")
                 time.sleep(3)
         
         print(f"{Fore.GREEN}✓ Prompt #{prompt_counter+1} complete! {Fore.LIGHTBLACK_EX}[{folder_name}]{Style.RESET_ALL}\n")
