@@ -35,7 +35,7 @@ class BingImageCreatorBulkGen(ImageGen):
 
             for batch in range(int(self.batches_per_prompt)):
                 try:
-                    self.log(f"  → Batch #{batch+1} ...", end=" ")
+                    self.log(f"  → Batch #{batch+1} ...", end=" ", flush=True)
 
                     if batch == 0:
                         with open(f"{folder_name}/prompt-used.txt", "w") as file:
