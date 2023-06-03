@@ -14,26 +14,45 @@ class BingImageCreatorBulkGen(ImageGen):
         output_dir: str,
         max_dir_length: int,
         batches_per_prompt: int,
+        process_prompts: bool = False,
+        append_style: bool = False
     ) -> None:
         super().__init__(auth_cookie=auth_cookie, quiet=True)
         self.prompts_file = prompts_file
         self.output_dir = output_dir
         self.max_dir_length = max_dir_length
         self.batches_per_prompt = batches_per_prompt
+        self.process_prompts = process_prompts
+        self.append_style = append_style
 
     def prompts_from_file(self, prompts_file: str) -> list:
         with open(prompts_file, 'r') as file:
+            if self.process_prompts:
+                processed = [re.sub(r'^\s*\d+\.\s*|\.\s*$', '', prompt).strip() for prompt in file if(len(prompt.strip()) > 0)]
+                
+                if self.append_style is not None:
+                    processed = [f"{prompt}, {self.append_style}" for prompt in processed]
+                
+                return processed
+
             return [prompt.strip() for prompt in file if len(prompt.strip()) > 0]
+        
+
 
     def execute(self):
+        self.log(
+            f'[ Using prompt file "{self.prompts_file}" with {self.batches_per_prompt} {"batches" if self.batches_per_prompt > 1 else "batch"} per prompt ]\n',
+                 foreground=Fore.LIGHTBLACK_EX)
+
         prompt_counter = 0
 
         for prompt in self.prompts_from_file(self.prompts_file):
             folder_name = self.truncate_filename(self.output_dir + "/" + self.encode_filename(prompt), max_length = int(self.max_dir_length))
             os.makedirs(folder_name, exist_ok=True)
-            self.log(f"{prompt_counter+1}. {prompt.strip()}", foreground=Fore.YELLOW)
+            self.log(f"{prompt_counter+1}. ", foreground=Fore.LIGHTBLACK_EX, end="")
+            self.log(prompt.strip(), foreground=Fore.YELLOW)
 
-            for batch in range(int(self.batches_per_prompt)):
+            for batch in range(self.batches_per_prompt):
                 try:
                     self.log(f"  → Batch #{batch+1} ...", end=" ", flush=True)
 
@@ -52,7 +71,7 @@ class BingImageCreatorBulkGen(ImageGen):
                     time.sleep(3)
             
             self.log(f"✓ Prompt #{prompt_counter+1} complete!", foreground=Fore.GREEN, end=" ")
-            self.log(f"[{folder_name}]\n", foreground=Fore.LIGHTBLACK_EX)
+            self.log(f"[ {folder_name} ]\n", foreground=Fore.LIGHTBLACK_EX)
             prompt_counter += 1
 
 
