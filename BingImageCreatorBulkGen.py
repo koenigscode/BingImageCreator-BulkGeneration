@@ -25,6 +25,8 @@ class BingImageCreatorBulkGen(ImageGen):
         self.process_prompts = process_prompts
         self.append_style = append_style
 
+        self.prompts = self.prompts_from_file(prompts_file)
+
     def prompts_from_file(self, prompts_file: str) -> list:
         with open(prompts_file, 'r') as file:
             if self.process_prompts:
@@ -46,15 +48,15 @@ class BingImageCreatorBulkGen(ImageGen):
 
         prompt_counter = 0
 
-        for prompt in self.prompts_from_file(self.prompts_file):
+        for prompt in self.prompts:
             folder_name = self.truncate_filename(self.output_dir + "/" + self.encode_filename(prompt), max_length = int(self.max_dir_length))
             os.makedirs(folder_name, exist_ok=True)
-            self.log(f"{prompt_counter+1}. ", foreground=Fore.LIGHTBLACK_EX, end="")
+            self.log(f"[{prompt_counter+1}/{len(self.prompts)}] ", foreground=Fore.LIGHTBLACK_EX, end="")
             self.log(prompt.strip(), foreground=Fore.YELLOW)
 
             for batch in range(self.batches_per_prompt):
                 try:
-                    self.log(f"  → Batch #{batch+1} ...", end=" ", flush=True)
+                    self.log(f"  → Batch {batch+1}/{self.batches_per_prompt} ...", end=" ", flush=True)
 
                     if batch == 0:
                         with open(f"{folder_name}/prompt-used.txt", "w") as file:
@@ -70,7 +72,7 @@ class BingImageCreatorBulkGen(ImageGen):
                     self.log(e, foreground=Fore.RED)
                     time.sleep(3)
             
-            self.log(f"✓ Prompt #{prompt_counter+1} complete!", foreground=Fore.GREEN, end=" ")
+            self.log(f"✓ Prompt completed!", foreground=Fore.GREEN, end=" ")
             self.log(f"[ {folder_name} ]\n", foreground=Fore.LIGHTBLACK_EX)
             prompt_counter += 1
 
